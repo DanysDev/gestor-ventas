@@ -21,6 +21,21 @@ export class ProductList {
   protected readonly supplierId = signal(this.route.snapshot.queryParamMap.get('proveedor') ?? '');
   protected readonly status = signal('');
 
+  ngOnInit() {
+    // El componente se reutiliza al navegar entre proveedores (ej: "Ver"
+    // en la lista de proveedores), así que hay que escuchar los cambios
+    // de la URL. Al llegar con otro proveedor se limpia el texto y el
+    // estado para no dejar filtros viejos que oculten sus productos.
+    this.route.queryParamMap.subscribe((params) => {
+      const fromUrl = params.get('proveedor') ?? '';
+      if (fromUrl !== this.supplierId()) {
+        this.supplierId.set(fromUrl);
+        this.q.set('');
+        this.status.set('');
+      }
+    });
+  }
+
   protected readonly suppliers = resource<Supplier[], void>({
     loader: () => this.data.suppliers(),
   });

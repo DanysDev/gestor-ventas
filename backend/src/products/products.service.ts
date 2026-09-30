@@ -101,7 +101,11 @@ export class ProductsService {
   async findAll(query: QueryProductsDto): Promise<ProductSummary[]> {
     const filter: Record<string, unknown> = {};
     if (query.supplierId) {
-      filter.supplierId = new Types.ObjectId(query.supplierId);
+      // Acepta ambos tipos BSON: hay productos viejos con supplierId
+      // guardado como texto y Mongo distingue texto de ObjectId al filtrar.
+      filter.supplierId = {
+        $in: [new Types.ObjectId(query.supplierId), query.supplierId],
+      };
     }
     if (query.status) {
       filter.status = query.status;
