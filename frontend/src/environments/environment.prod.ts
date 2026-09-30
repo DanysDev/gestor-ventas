@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBase: '',
+  apiBase: 'https://gestor-ventas-api-inpe.onrender.com/api',
 };
