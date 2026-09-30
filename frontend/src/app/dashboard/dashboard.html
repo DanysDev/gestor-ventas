@@ -1,0 +1,96 @@
+<div class="dash-header">
+  <h1>Inicio</h1>
+  <button (click)="refresh()">↻ Actualizar</button>
+</div>
+
+@if (overview.isLoading()) {
+  <section class="totals" aria-hidden="true">
+    @for (i of [0, 1, 2, 3, 4, 5]; track i) {
+      <article class="tile">
+        <div class="sk sk-line" style="width: 60%"></div>
+        <div class="sk sk-line" style="width: 85%"></div>
+      </article>
+    }
+  </section>
+} @else if (overview.hasValue()) {
+  <section class="totals">
+    <article class="tile green">
+      <div class="tile-label">Ganado</div>
+      <div class="tile-value">{{ formatMoney(overview.value()!.totals.earnedCommission) }}</div>
+      @if (overview.value()!.totals.earnedCommissionCup) {
+        <div class="tile-cup">{{ formatMoney(overview.value()!.totals.earnedCommissionCup ?? 0, 'CUP') }}</div>
+      }
+    </article>
+    <article class="tile amber">
+      <div class="tile-label">Por cobrar</div>
+      <div class="tile-value">{{ formatMoney(overview.value()!.totals.pendingCommission) }}</div>
+      @if (overview.value()!.totals.pendingCommissionCup) {
+        <div class="tile-cup">{{ formatMoney(overview.value()!.totals.pendingCommissionCup ?? 0, 'CUP') }}</div>
+      }
+    </article>
+    <article class="tile blue">
+      <div class="tile-label">Productos</div>
+      <div class="tile-value">{{ overview.value()!.totals.products }}</div>
+    </article>
+    <article class="tile">
+      <div class="tile-label">Activos</div>
+      <div class="tile-value">{{ overview.value()!.totals.active }}</div>
+    </article>
+    <article class="tile">
+      <div class="tile-label">Vendidos</div>
+      <div class="tile-value">{{ overview.value()!.totals.sold }}</div>
+    </article>
+    <article class="tile">
+      <div class="tile-label">Publicaciones</div>
+      <div class="tile-value">{{ overview.value()!.totals.publications }}</div>
+    </article>
+  </section>
+
+  <section class="quick-links">
+    <a routerLink="/productos">📦 Actualizar productos</a>
+    <a routerLink="/productos/nuevo">➕ Nuevo producto</a>
+    <a routerLink="/ventas">💰 Registrar venta</a>
+  </section>
+
+  <div class="grid">
+    <article class="card">
+      <h2>Comisiones por proveedor</h2>
+      @for (sup of overview.value()!.bySupplier; track sup.name) {
+        <div class="sup-row">
+          <div class="grow">
+            <div class="name">{{ sup.name }}</div>
+            <div class="secondary">
+              {{ sup.active }} activos · {{ sup.sold }} vendidos · {{ sup.publications }} pub
+            </div>
+            <div class="bars">
+              @for (bar of [0, 1, 2, 3, 4]; track bar) {
+                <span [style.height.%]="barPerSupplier(sup)"></span>
+              }
+            </div>
+          </div>
+          <div class="earn">{{ formatMoney(sup.earned) }} @if (sup.earnedCup) { · {{ formatMoney(sup.earnedCup, 'CUP') }} }</div>
+        </div>
+      } @empty {
+        <p class="empty">Sin proveedores aún</p>
+      }
+    </article>
+
+    <article class="card">
+      <h2>Top productos vendidos</h2>
+      @for (p of topProducts(); track p._id; let i = $index) {
+        <a class="rank-row" [routerLink]="['/productos', p._id]">
+          <span class="pos">{{ i + 1 }}</span>
+          <div class="grow">
+            <div class="name">{{ p.title }}</div>
+            <div class="sub">
+              {{ p.soldQty }} vendidos · {{ p.publications }} publicaciones · {{ p.conversion }}% conv.
+            </div>
+          </div>
+          <div class="earn">{{ formatMoney(p.earnedCommission, p.commissionCurrency ?? 'USD') }}</div>
+        </a>
+      } @empty {
+        <p class="empty">Aún no hay productos vendidos</p>
+      }
+    </article>
+  </div>
+}

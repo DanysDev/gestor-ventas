@@ -1,0 +1,210 @@
+<div class="page-head">
+  <h1>{{ id ? 'Editar producto' : 'Nuevo producto' }}</h1>
+  <a class="back" routerLink="/productos">← Volver</a>
+</div>
+
+@if (loading()) {
+  <p>Cargando…</p>
+} @else {
+  <div class="layout">
+    <form class="card" (submit)="onSubmit(); $event.preventDefault()">
+      @if (error()) {
+        <div class="error-box">{{ error() }}</div>
+      }
+
+      <div class="field">
+        <label>Título del producto</label>
+        <input [formField]="productForm.title" placeholder="Ej: Audífonos Pro Max X" />
+        @if (productForm.title().touched() && productForm.title().errors().length) {
+          <span class="field-error">{{ productForm.title().errors()[0].message }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label>Proveedor</label>
+        <select [formField]="productForm.supplierId">
+          <option value="">Selecciona…</option>
+          @for (s of suppliers.value() ?? []; track s._id) {
+            <option [value]="s._id">{{ s.name }}</option>
+          }
+        </select>
+        @if (productForm.supplierId().touched() && productForm.supplierId().errors().length) {
+          <span class="field-error">{{ productForm.supplierId().errors()[0].message }}</span>
+        }
+      </div>
+
+      <div class="field margin-comm-card">
+        <label class="field-check">
+          <input
+            type="checkbox"
+            [checked]="marginEnabled()"
+            (change)="onMarginToggle($event)"
+          />
+          Comisión por margen de precio
+        </label>
+        @if (marginEnabled()) {
+          <div class="row margin-comm">
+            <div class="field">
+              <label>Precio del proveedor (USD)</label>
+              <input type="number" step="0.01" [formField]="productForm.supplierPrice" />
+            </div>
+            <div class="field">
+              <label>Precio de venta (USD)</label>
+              <input type="number" step="0.01" [formField]="productForm.price" />
+              <span class="field-hint">Es el precio que se usa en la venta.</span>
+            </div>
+          </div>
+          @if (marginError()) {
+            <span class="field-error">{{ marginError() }}</span>
+          }
+          @if (marginHint()) {
+            <p class="hint">{{ marginHint() }}</p>
+          }
+        }
+      </div>
+
+      @if (!marginEnabled()) {
+        <div class="row">
+          <div class="field">
+            <label>Precio (USD)</label>
+            <input type="number" step="0.01" [formField]="productForm.price" />
+          </div>
+          <div class="field">
+            <label>Tipo de comisión</label>
+            <select [formField]="productForm.commissionType" (change)="onCommissionTypeChange()">
+              <option value="fixed">Fija</option>
+              <option value="percent">Porcentaje (%)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>{{ productForm.commissionType().value() === 'percent' ? 'Porcentaje (%)' : 'Comisión fija (' + commissionCurrencyLabel() + ')' }}</label>
+            <input type="number" step="0.01" [formField]="productForm.commissionValue" />
+          </div>
+          <div class="field">
+            <label>Moneda de la comisión</label>
+            <select [formField]="productForm.commissionCurrency">
+              <option value="USD">USD</option>
+              <option value="CUP">CUP</option>
+            </select>
+            @if (productForm.commissionType().value() === 'percent') {
+              <span class="field-hint">Con porcentaje la comisión se calcula en USD.</span>
+            }
+          </div>
+        </div>
+
+        <div class="field qty-comm-card">
+          <label class="field-check">
+            <input type="checkbox" [checked]="qtyEnabled()" (change)="onQtyToggle($event)" />
+            Comisión distinta por cantidad (opcional)
+          </label>
+          @if (qtyEnabled()) {
+            <div class="row qty-comm">
+              <div class="field">
+                <label>Mínimo de unidades</label>
+                <input type="number" step="1" [formField]="productForm.commissionQtyMin" />
+                <span class="field-hint">Desde esta cantidad se aplica la otra comisión.</span>
+              </div>
+              <div class="field">
+                <label>Tipo</label>
+                <select [formField]="productForm.commissionQtyType">
+                  <option value="fixed">Fija</option>
+                  <option value="percent">Porcentaje (%)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>{{ qtyType() === 'percent' ? 'Porcentaje (%)' : 'Por unidad (' + commissionCurrencyLabel() + ')' }}</label>
+                <input type="number" step="0.01" [formField]="productForm.commissionQtyValue" />
+              </div>
+            </div>
+            @if (qtyValueHint()) {
+              <p class="hint">{{ qtyValueHint() }}</p>
+            }
+          }
+        </div>
+      }
+
+      <div class="field field-full">
+        <label>Estado</label>
+        <select [formField]="productForm.status">
+          <option value="active">Activo</option>
+          <option value="sold">Vendido</option>
+          <option value="hidden">Oculto</option>
+        </select>
+      </div>
+
+      <p class="hint">{{ commissionHint() }}</p>
+
+      <div class="field">
+        <label>Descripción para publicar</label>
+        <textarea
+          [formField]="productForm.description"
+          placeholder="Escribe aquí la descripción tal cual la publicarás…"
+        ></textarea>
+      </div>
+
+      <div class="field">
+        <label>Tallas / números disponibles (opcional)</label>
+        <input
+          [formField]="productForm.sizes"
+          placeholder="Ej: 36, 37, 39, 40 o 36 al 40"
+        />
+      </div>
+
+      <div class="field">
+        <label>
+          Rutas de fotos (una por línea, relativas a tu carpeta de ventas)
+        </label>
+        <textarea
+          [ngModel]="imagesText()"
+          (ngModelChange)="imagesText.set($event)"
+          placeholder="Ej: Proveedor/Producto/foto.jpg — o pega la ruta completa del archivo"
+          rows="3"
+        ></textarea>
+        <input
+          #fileInput
+          class="file-hidden"
+          type="file"
+          accept="image/*"
+          multiple
+          (change)="upload($event)"
+        />
+        <div class="upload-row">
+          <button
+            class="btn-upload"
+            type="button"
+            (click)="fileInput.click()"
+            [disabled]="uploading()"
+          >
+            {{ uploading() ? 'Subiendo…' : '📷 Subir imágenes' }}
+          </button>
+          <span class="upload-hint">Se guardan dentro de tu carpeta de ventas, en el proveedor y producto.</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-secondary" type="button" (click)="copyPreview()">
+          ⧉ Copiar vista previa
+        </button>
+        <button class="btn-primary" type="submit" [disabled]="saving() || productForm().invalid()">
+          {{ saving() ? 'Guardando…' : id ? 'Guardar cambios' : 'Crear producto' }}
+        </button>
+      </div>
+    </form>
+
+    <aside class="card">
+      <h2>Vista previa de publicación</h2>
+      @if (preview()) {
+        <div class="preview">{{ preview() }}</div>
+      } @else {
+        <p class="preview-empty">Completa el formulario para ver cómo quedará la publicación.</p>
+      }
+    </aside>
+  </div>
+}
+
+@if (toast()) {
+  <div class="toast">{{ toast() }}</div>
+}

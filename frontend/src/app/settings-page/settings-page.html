@@ -1,0 +1,120 @@
+<div class="page-head">
+  <h1>Configuración</h1>
+</div>
+
+@if (keysReady()) {
+  <div class="layout">
+    <form class="card" (submit)="onSubmit(); $event.preventDefault()">
+      <h2>Datos del gestor</h2>
+      <p class="desc">Estos datos se usan en los vales de venta.</p>
+      @if (error() && !importing()) {
+        <div class="error-box">{{ error() }}</div>
+      }
+      <div class="field">
+        <label>Nombre del gestor</label>
+        <input [formField]="settingsForm.gestor" />
+      </div>
+      <div class="field">
+        <label>Teléfono del gestor</label>
+        <input [formField]="settingsForm.gestorPhone" placeholder="+53 5…" />
+      </div>
+      <div class="field">
+        <label>Enlace de contacto global</label>
+        <input
+          [formField]="settingsForm.contactLink"
+          placeholder="https://wa.me/5351234567"
+        />
+      </div>
+      <p class="desc">
+        Este enlace se añade automáticamente al final de cada publicación al usar
+        "Copiar" o "Publicar y copiar".
+      </p>
+      <div class="field">
+        <label>Moneda</label>
+        <input [formField]="settingsForm.currency" placeholder="USD" />
+      </div>
+      <div class="field">
+        <label>PIN de acceso (para móvil / internet)</label>
+        <input
+          [formField]="settingsForm.pin"
+          type="password"
+          inputmode="numeric"
+          placeholder="Déjalo vacío para no cambiarlo"
+          aria-label="Nuevo PIN de acceso"
+          autocomplete="new-password"
+        />
+        <label class="checkbox-row">
+          <input [formField]="settingsForm.clearPin" type="checkbox" />
+          Desactivar el PIN
+        </label>
+        <p class="desc">
+          Con PIN activo, cualquiera necesita esta clave para ver tus ventas. Pruébalo
+          antes de abrir la web por Cloudflare.
+        </p>
+      </div>
+      <button class="btn-primary" type="submit" [disabled]="saving()">
+        {{ saving() ? 'Guardando…' : 'Guardar configuración' }}
+      </button>
+    </form>
+
+    <div class="card">
+      <h2>Tema</h2>
+      <p class="desc">Ajusta el aspecto de la aplicación. El tema se guarda en tu navegador.</p>
+      <div class="theme-row">
+        <button
+          type="button"
+          class="theme-opt"
+          [class.on]="theme() === 'light'"
+          (click)="chooseTheme('light')"
+        >
+          ☀️ Claro
+        </button>
+        <button
+          type="button"
+          class="theme-opt"
+          [class.on]="theme() === 'dark'"
+          (click)="chooseTheme('dark')"
+        >
+          🌙 Oscuro
+        </button>
+        <button
+          type="button"
+          class="theme-opt"
+          [class.on]="theme() === 'auto'"
+          (click)="chooseTheme('auto')"
+        >
+          🌗 Automático
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Importar mis productos actuales</h2>
+      <p class="desc">
+        Escanea la carpeta <b>~/Gestion de ventas</b> y crea proveedores y productos
+        automáticamente (descripciones, comisiones y fotos) sin duplicar los que ya
+        existen.
+      </p>
+      <button class="btn-import" (click)="runImport()" [disabled]="importing()">
+        {{ importing() ? 'Importando…' : '↻ Importar desde mi carpeta' }}
+      </button>
+
+      @if (result()) {
+        @if (result()!.error) {
+          <div class="result error">{{ result()!.error }}</div>
+        } @else {
+          <div class="result">
+            ✓ Importación completada: {{ result()!.suppliers }} proveedores y
+            {{ result()!.products }} productos nuevos ({{ result()!.skipped }} ya existían).
+          </div>
+        }
+      }
+    </div>
+  </div>
+} @else {
+  <p>Cargando…</p>
+}
+
+@if (toast()) {
+  <div class="toast">{{ toast() }}</div>
+}

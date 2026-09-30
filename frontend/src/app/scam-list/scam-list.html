@@ -1,0 +1,87 @@
+<div class="page-head">
+  <h1>⚠️ Estafas</h1>
+  @if (!creating()) {
+    <button class="btn-toggle" (click)="startNew()">＋ Añadir</button>
+  }
+</div>
+
+<p class="intro">Contactos marcados como estafa. Guárdalos por nombre, dirección y teléfono para reconocerlos y avisar a otros.</p>
+
+@if (creating()) {
+  <form class="form-card" (submit)="onSubmit(); $event.preventDefault()">
+    <h2>{{ editingId() ? 'Editar contacto' : 'Nuevo contacto' }}</h2>
+    @if (error()) {
+      <div class="error-box">{{ error() }}</div>
+    }
+    <div class="field">
+      <label>Nombre / Alias</label>
+      <input [formField]="scamForm.name" placeholder="Ej: Juanito 'el rápido'" />
+      @if (scamForm.name().touched() && scamForm.name().errors().length) {
+        <span class="field-error">{{ scamForm.name().errors()[0].message }}</span>
+      }
+    </div>
+    <div class="field">
+      <label>Teléfono</label>
+      <input [formField]="scamForm.phone" placeholder="+53 5…" />
+    </div>
+    <div class="field">
+      <label>Dirección</label>
+      <input [formField]="scamForm.address" placeholder="Municipio, calle, referencia…" />
+    </div>
+    <div class="field">
+      <label>Detalles</label>
+      <textarea [formField]="scamForm.notes" placeholder="Qué hizo, cuenta bancaria, datos que te dieron…"></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn-cancel" type="button" (click)="reset()">Cancelar</button>
+      <button class="btn-primary" type="submit" [disabled]="saving() || scamForm().invalid()">
+        {{ saving() ? 'Guardando…' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+}
+
+@if (scams.hasValue() && scams.value()!.length === 0) {
+  <div class="empty-state">Aún no hay contactos marcados como estafa.</div>
+}
+
+@if ((scams.value() ?? []).length > 0) {
+  <input
+    class="search"
+    placeholder="🔍 Buscar por nombre, teléfono o dirección…"
+    [ngModel]="q()"
+    (ngModelChange)="q.set($event)"
+  />
+}
+
+@for (s of filtered(); track s._id) {
+  <article class="card">
+    <div class="avatar">🚫</div>
+    <div class="grow">
+      <div class="name">{{ s.name }}</div>
+      <div class="rows">
+        @if (s.phone) {
+          <div class="row-item">📱 {{ s.phone }}</div>
+        }
+        @if (s.address) {
+          <div class="row-item">📍 {{ s.address }}</div>
+        }
+        @if (s.notes) {
+          <div class="row-item notes">🗒️ {{ s.notes }}</div>
+        }
+      </div>
+    </div>
+    <div class="row-actions">
+      <button (click)="startEdit(s)">Editar</button>
+      <button class="danger" (click)="remove(s)" aria-label="Eliminar" >🗑️</button>
+    </div>
+  </article>
+} @empty {
+  @if ((scams.value() ?? []).length > 0 && filtered().length === 0) {
+    <div class="empty-state">Sin resultados para tu búsqueda.</div>
+  }
+}
+
+@if (toast()) {
+  <div class="toast">{{ toast() }}</div>
+}

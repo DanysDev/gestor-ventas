@@ -1,0 +1,1 @@
+export const INJECTABLE_TOKEN_ASSETS = 'ASSETS_ROOT';

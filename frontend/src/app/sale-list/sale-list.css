@@ -1,0 +1,221 @@
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.page-head h1 {
+  font-size: 22px;
+}
+.btn-toggle {
+  background: var(--brand);
+  color: white;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 11px;
+}
+.btn-toggle.close {
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.filters2 {
+  margin-bottom: 14px;
+}
+.filters2 select {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+.form-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.form-card h2 {
+  font-size: 16px;
+  margin-bottom: 14px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.field label {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.field input,
+.field select,
+.field textarea {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  background: var(--field);
+  width: 100%;
+}
+.field textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+.field-error {
+  font-size: 12.5px;
+  color: var(--danger);
+}
+.field-hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.btn-primary {
+  width: 100%;
+  background: var(--brand);
+  color: white;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 11px;
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+}
+.error-box {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.sale {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.sale-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.sale-top .grow {
+  flex: 1;
+  min-width: 0;
+}
+.sale-title {
+  font-weight: 700;
+  font-size: 15px;
+}
+.sale-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.sale-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  align-items: center;
+}
+.sale-actions button,
+.sale-actions a {
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-weight: 600;
+  font-size: 13px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+.sale-actions .copy {
+  background: var(--info-soft);
+  color: var(--info);
+  border-color: transparent;
+}
+.sale-actions .paid {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+  border-color: transparent;
+}
+.sale-actions .danger {
+  color: var(--danger);
+}
+.money {
+  font-weight: 800;
+  color: var(--brand-dark);
+}
+.sale-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.sale-status.pending {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.sale-status.paid {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+.sale-status.cancelled {
+  background: var(--gray-soft);
+  color: var(--muted);
+}
+.empty-state {
+  text-align: center;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 32px 16px;
+  color: var(--muted);
+  box-shadow: var(--shadow);
+}
+.total-bar {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.total-bar b {
+  color: var(--brand-dark);
+}
+.cup-total b {
+  color: var(--warn);
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--toast-bg);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  z-index: 60;
+}
+@media (max-width: 560px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+}

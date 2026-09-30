@@ -1,0 +1,247 @@
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.page-head h1 {
+  font-size: 22px;
+}
+.intro {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.btn-toggle {
+  background: var(--brand);
+  color: white;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 11px;
+}
+.pending-banner {
+  background: var(--warn-soft);
+  color: var(--warn);
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.form-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.form-card h2 {
+  font-size: 16px;
+  margin-bottom: 14px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.field label {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.field input,
+.field textarea,
+.field select {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  background: var(--field);
+  width: 100%;
+}
+.field textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.field-error {
+  font-size: 12.5px;
+  color: var(--danger);
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-primary {
+  flex: 1;
+  background: var(--brand);
+  color: white;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 11px;
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+}
+.btn-cancel {
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 11px;
+  border: 1px solid var(--line);
+}
+.error-box {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.search {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 10px 12px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+.status-select {
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 10px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+.empty-state {
+  text-align: center;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 32px 16px;
+  color: var(--muted);
+  box-shadow: var(--shadow);
+}
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid transparent;
+}
+.card.overdue {
+  border-left-color: var(--danger);
+}
+.card .avatar {
+  width: 44px;
+  min-height: 44px;
+  border-radius: 12px;
+  background: var(--info-soft);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  flex: none;
+}
+.card.overdue .avatar {
+  background: var(--danger-soft);
+}
+.card .grow {
+  flex: 1;
+  min-width: 0;
+}
+.topline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card .name {
+  font-weight: 700;
+}
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: auto;
+}
+.st-pending {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.st-contacted {
+  background: var(--info-soft);
+  color: var(--info);
+}
+.st-done {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+.reason {
+  margin-top: 4px;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.rows {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.row-item {
+  font-size: 13px;
+  color: var(--muted);
+}
+.row-item.overdue-text {
+  color: var(--danger);
+  font-weight: 600;
+}
+.row-item.notes {
+  color: var(--ink);
+}
+.row-actions {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+.row-actions button {
+  padding: 8px 10px;
+  border-radius: 9px;
+  font-weight: 600;
+  font-size: 13px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+.row-actions .quick {
+  font-size: 14px;
+}
+.row-actions .quick-done {
+  color: var(--brand);
+}
+.row-actions .danger {
+  color: var(--danger);
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--toast-bg);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  z-index: 60;
+}

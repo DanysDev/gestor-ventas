@@ -1,0 +1,63 @@
+<div class="notif">
+  <button
+    class="notif-bell"
+    (click)="toggle()"
+    [attr.aria-expanded]="open()"
+    aria-haspopup="true"
+    [attr.aria-label]="
+      open()
+        ? 'Cerrar notificaciones'
+        : count() > 0
+          ? countLabel() + ' notificaciones pendientes'
+          : 'Notificaciones'
+    "
+  >
+    🔔
+    @if (count() > 0) {
+      <span #badge class="notif-badge">{{ countLabel() }}</span>
+    }
+  </button>
+
+  @if (open()) {
+    <div class="notif-backdrop" (mousedown)="close()"></div>
+    <div class="notif-panel" role="dialog" aria-label="Notificaciones">
+      <header class="notif-head">
+        <strong>Notificaciones</strong>
+        @if (count() > 0) {
+          <button class="notif-clear" (click)="markAllSeen()">
+            Marcar todas vistas
+          </button>
+        }
+      </header>
+      <div class="notif-list">
+        @for (n of svc.items(); track n.id) {
+          <article
+            class="notif-item type-{{ n.type }} sev-{{ n.severity }}"
+            [class.leaving]="leaving().has(n.id)"
+          >
+            <span class="notif-ico">{{ icon(n) }}</span>
+            <div class="notif-body">
+              <div class="notif-title">{{ n.title }}</div>
+              <div class="notif-msg">{{ n.message }}</div>
+            </div>
+            <div class="notif-actions">
+              <button class="notif-view" (click)="view(n)">Ver</button>
+              <button
+                class="notif-done"
+                (click)="markSeen(n)"
+                [attr.aria-label]="'Marcar como vista: ' + n.title"
+              >
+                ✓
+              </button>
+            </div>
+          </article>
+        } @empty {
+          <div class="notif-empty">
+            <span class="notif-empty-ico">✅</span>
+            <p>Todo al día</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

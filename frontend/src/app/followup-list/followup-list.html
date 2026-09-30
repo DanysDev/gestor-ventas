@@ -1,0 +1,132 @@
+<div class="page-head">
+  <h1>📌 Seguimiento</h1>
+  @if (!creating()) {
+    <button class="btn-toggle" (click)="startNew()">＋ Añadir</button>
+  }
+</div>
+
+<p class="intro">Clientes que pidieron que les avises cuando entre un producto, conversaciones a medias que hay que retomar días después y cualquier pendiente de contacto.</p>
+
+@if (!creating() && pendingCount() > 0) {
+  <div class="pending-banner">⏳ {{ pendingCount() }} pendiente{{ pendingCount() === 1 ? '' : 's' }} por contactar</div>
+}
+
+@if (creating()) {
+  <form class="form-card" (submit)="onSubmit(); $event.preventDefault()">
+    <h2>{{ editingId() ? 'Editar seguimiento' : 'Nuevo seguimiento' }}</h2>
+    @if (error()) {
+      <div class="error-box">{{ error() }}</div>
+    }
+    <div class="field">
+      <label>Nombre del cliente</label>
+      <input [formField]="followupForm.name" placeholder="Ej: Yusmara (pide bolso negro)" />
+      @if (followupForm.name().touched() && followupForm.name().errors().length) {
+        <span class="field-error">{{ followupForm.name().errors()[0].message }}</span>
+      }
+    </div>
+    <div class="field">
+      <label>Teléfono</label>
+      <input [formField]="followupForm.phone" placeholder="+53 5…" />
+    </div>
+    <div class="field">
+      <label>Motivo / Pendiente</label>
+      <textarea [formField]="followupForm.reason" placeholder="Ej: quiere una moto cuando llegue / quedamos en pasarme el precio por WhatsApp"></textarea>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Estado</label>
+        <select [formField]="followupForm.status">
+          <option value="pending">Pendiente</option>
+          <option value="contacted">Contactado</option>
+          <option value="done">Resuelto</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Seguir el</label>
+        <input type="date" [formField]="followupForm.dueDate" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Notas</label>
+      <textarea [formField]="followupForm.notes" placeholder="Detalles de la conversación, lo que quedó acordado…"></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn-cancel" type="button" (click)="reset()">Cancelar</button>
+      <button class="btn-primary" type="submit" [disabled]="saving() || followupForm().invalid()">
+        {{ saving() ? 'Guardando…' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+}
+
+@if ((followups.value() ?? []).length === 0) {
+  <div class="empty-state">Aún no hay seguimientos registrados.</div>
+}
+
+@if ((followups.value() ?? []).length > 0) {
+  <div class="filters">
+    <input
+      class="search"
+      placeholder="🔍 Buscar cliente, motivo o teléfono…"
+      [ngModel]="q()"
+      (ngModelChange)="q.set($event)"
+    />
+    <select
+      class="status-select"
+      [ngModel]="statusFilter()"
+      (ngModelChange)="statusFilter.set($event)"
+    >
+      <option value="">Todos los estados</option>
+      <option value="pending">Pendientes</option>
+      <option value="contacted">Contactados</option>
+      <option value="done">Resueltos</option>
+    </select>
+  </div>
+}
+
+@for (f of filtered(); track f._id) {
+  <article class="card" [class.overdue]="isOverdue(f)">
+    <div class="avatar">{{ f.status === 'done' ? '✅' : isOverdue(f) ? '🔔' : '📌' }}</div>
+    <div class="grow">
+      <div class="topline">
+        <span class="name">{{ f.name }}</span>
+        <span class="badge st-{{ f.status }}">{{ label(f.status) }}</span>
+      </div>
+      @if (f.reason) {
+        <div class="reason">{{ f.reason }}</div>
+      }
+      <div class="rows">
+        @if (f.phone) {
+          <div class="row-item">📱 {{ f.phone }}</div>
+        }
+        @if (f.dueDate) {
+          <div class="row-item" [class.overdue-text]="isOverdue(f)">
+            🗓️ Seguir el {{ dateText(f.dueDate) }}
+            @if (isOverdue(f)) { — ¡vencido! }
+          </div>
+        }
+        @if (f.notes) {
+          <div class="row-item notes">🗒️ {{ f.notes }}</div>
+        }
+      </div>
+    </div>
+    <div class="row-actions">
+      @if (f.status === 'pending') {
+        <button class="quick" (click)="setStatus(f, 'contacted')">📞</button>
+      }
+      @if (f.status !== 'done') {
+        <button class="quick quick-done" (click)="setStatus(f, 'done')">✓</button>
+      }
+      <button (click)="startEdit(f)">Editar</button>
+      <button class="danger" (click)="remove(f)" aria-label="Eliminar seguimiento" >🗑️</button>
+    </div>
+  </article>
+} @empty {
+  @if ((followups.value() ?? []).length > 0 && filtered().length === 0) {
+    <div class="empty-state">Sin resultados para tu búsqueda.</div>
+  }
+}
+
+@if (toast()) {
+  <div class="toast">{{ toast() }}</div>
+}

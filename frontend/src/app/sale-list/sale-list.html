@@ -1,0 +1,179 @@
+<div class="page-head">
+  <h1>Ventas</h1>
+  <button class="btn-toggle" [class.close]="created()" (click)="created.set(!created())">
+    {{ created() ? 'Cerrar' : '＋ Registrar venta' }}
+  </button>
+</div>
+
+@if (created()) {
+  <form class="form-card" (submit)="onSubmit(); $event.preventDefault()">
+    <h2>Nueva venta</h2>
+    @if (error()) {
+      <div class="error-box">{{ error() }}</div>
+    }
+
+    <div class="field">
+      <label>Producto</label>
+      <select [formField]="saleForm.productId" (change)="onProductChange()">
+        <option value="">Selecciona…</option>
+        @for (p of products.value() ?? []; track p._id) {
+          <option [value]="p._id">{{ p.title }}</option>
+        }
+      </select>
+      @if (saleForm.productId().touched() && saleForm.productId().errors().length) {
+        <span class="field-error">{{ saleForm.productId().errors()[0].message }}</span>
+      }
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label>Cliente</label>
+        <input [formField]="saleForm.clientName" placeholder="Nombre del cliente" />
+      </div>
+      <div class="field">
+        <label>Teléfono</label>
+        <input [formField]="saleForm.clientPhone" placeholder="+53 5…" />
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label>Dirección</label>
+        <input [formField]="saleForm.address" />
+      </div>
+      <div class="field">
+        <label>Municipio</label>
+        <input [formField]="saleForm.municipality" />
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label>Entrega</label>
+        <select [formField]="saleForm.deliveryType">
+          <option value="mensajeria">Mensajería</option>
+          <option value="recogida">Recogida en local</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Costo de envío (si aplica)</label>
+        <input type="number" step="0.01" [formField]="saleForm.deliveryCost" />
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label>Cantidad</label>
+        <input type="number" [formField]="saleForm.quantity" (change)="onQtyChange()" />
+      </div>
+      <div class="field">
+        <label>Forma de pago</label>
+        <select [formField]="saleForm.paymentMethod">
+          <option value="">—</option>
+          <option value="efectivo">Efectivo</option>
+          <option value="transferencia">Transferencia</option>
+          <option value="tarjeta">Tarjeta</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label>Precio de venta (USD)</label>
+        <input type="number" step="0.01" [formField]="saleForm.salePrice" />
+        @if (supplierPriceHint()) {
+          <span class="field-hint">{{ supplierPriceHint() }}</span>
+        }
+      </div>
+      <div class="field">
+        <label>Comisión del gestor ({{ selectedProductCurrency() }})</label>
+        <input type="number" step="0.01" [formField]="saleForm.commission" />
+        @if (qtyCommissionHint()) {
+          <span class="field-hint">{{ qtyCommissionHint() }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label>Fecha</label>
+        <input type="date" [formField]="saleForm.saleDate" />
+      </div>
+      <div class="field">
+        <label>Estado</label>
+        <select [formField]="saleForm.status">
+          <option value="pending">Por cobrar</option>
+          <option value="paid">Cobrada</option>
+          <option value="cancelled">Cancelada</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Observaciones</label>
+      <textarea [formField]="saleForm.observations"></textarea>
+    </div>
+
+    <button class="btn-primary" type="submit" [disabled]="saving() || saleForm().invalid()">
+      {{ saving() ? 'Guardando…' : 'Guardar venta' }}
+    </button>
+  </form>
+}
+
+<div class="filters2">
+  <select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
+    <option value="">Todas</option>
+    <option value="pending">Por cobrar</option>
+    <option value="paid">Cobradas</option>
+    <option value="cancelled">Canceladas</option>
+  </select>
+</div>
+
+@if (sales.hasValue() && sales.value()!.length > 0) {
+  <div class="total-bar">
+    <span>📋 {{ sales.value()!.length }} ventas</span>
+    <span>💰 Comisiones: <b>{{ formatMoney(sumCommissionsUsd()) }}</b></span>
+    @if (sumCommissionsCup() > 0) {
+      <span class="cup-total">+ <b>{{ formatMoney(sumCommissionsCup(), 'CUP') }}</b></span>
+    }
+  </div>
+
+  @for (s of sales.value() ?? []; track s._id) {
+    <article class="sale">
+      <div class="sale-top">
+        <div class="grow">
+          <div class="sale-title">{{ s.clientName || 'Cliente sin nombre' }}</div>
+          <div class="sale-sub">
+            {{ s.product?.title ?? 'Producto eliminado' }} ·
+            {{ s.quantity }} ud · {{ formatMoney(s.salePrice) }}
+            @if (s.product?.supplier) { · {{ s.product.supplier.name }} }
+          </div>
+          <div class="sale-sub">
+            📅 {{ longDate(s.saleDate) }} · {{ deliveryLabel(s) }}
+            @if (s.paymentMethod) { · 💳 {{ s.paymentMethod }} }
+          </div>
+        </div>
+        <span class="money">{{ formatMoney(s.commission, s.commissionCurrency ?? 'USD') }}</span>
+        <span [class]="'sale-status ' + s.status">{{ statusLabel(s) }}</span>
+      </div>
+      <div class="sale-actions">
+        <button class="copy" (click)="copyVale(s)">⧉ Copiar vale</button>
+        @if (s.status === 'pending') {
+          <button class="paid" (click)="setStatus(s, 'paid')">✓ Marcar cobrada</button>
+        }
+        @if (s.status !== 'cancelled') {
+          <button (click)="setStatus(s, 'cancelled')">✕ Cancelar</button>
+        }
+        <button class="danger" (click)="remove(s)" aria-label="Eliminar" >🗑️</button>
+      </div>
+    </article>
+  }
+} @else if (sales.isLoading() && !sales.hasValue()) {
+  <p>Cargando…</p>
+} @else {
+  <div class="empty-state">No hay ventas registradas todavía.</div>
+}
+
+@if (toast()) {
+  <div class="toast">{{ toast() }}</div>
+}

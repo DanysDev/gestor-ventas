@@ -1,0 +1,60 @@
+<header class="shell-top">
+  <a class="shell-brand" routerLink="/">
+    <span class="logo">🛒</span>
+    <span>{{ settings().gestor }}</span>
+  </a>
+  <nav class="shell-nav desktop-visible">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Inicio
+    </a>
+    <a routerLink="/productos" routerLinkActive="active">Productos</a>
+    <a routerLink="/ventas" routerLinkActive="active">Ventas</a>
+    <a routerLink="/proveedores" routerLinkActive="active">Proveedores</a>
+    <a routerLink="/seguimiento" routerLinkActive="active">Seguimiento</a>
+    <a routerLink="/estafas" routerLinkActive="active">Estafas</a>
+    <a routerLink="/config" routerLinkActive="active">Config</a>
+  </nav>
+  <app-notifications />
+  <button
+    class="theme-toggle"
+    (click)="cycleTheme()"
+    [attr.aria-label]="theme() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+  >
+    {{ theme() === 'dark' ? '☀️' : '🌙' }}
+  </button>
+</header>
+
+<div class="shell-content">
+  <router-outlet />
+</div>
+
+<nav class="shell-bottom">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+    <span class="ico">📊</span>
+    Inicio
+  </a>
+  <a routerLink="/productos" routerLinkActive="active">
+    <span class="ico">📦</span>
+    Productos
+  </a>
+  <a routerLink="/ventas" routerLinkActive="active">
+    <span class="ico">💰</span>
+    Ventas
+  </a>
+  <a routerLink="/proveedores" routerLinkActive="active">
+    <span class="ico">🤝</span>
+    Proveedores
+  </a>
+  <a routerLink="/seguimiento" routerLinkActive="active">
+    <span class="ico">📌</span>
+    Seguimiento
+  </a>
+  <a routerLink="/estafas" routerLinkActive="active">
+    <span class="ico">🚫</span>
+    Estafas
+  </a>
+  <a routerLink="/config" routerLinkActive="active">
+    <span class="ico">⚙️</span>
+    Config
+  </a>
+</nav>

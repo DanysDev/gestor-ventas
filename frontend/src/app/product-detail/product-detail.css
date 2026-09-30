@@ -1,0 +1,229 @@
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.head h1 {
+  font-size: 20px;
+}
+.back {
+  font-weight: 600;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: start;
+  }
+}
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+.card h2 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.gallery img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: zoom-in;
+}
+.gallery:has(img:nth-child(1):last-child) {
+  grid-template-columns: 1fr;
+}
+.meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.meta-cell {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.meta-cell .k {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.meta-cell .v {
+  font-weight: 800;
+  font-size: 16px;
+  margin-top: 2px;
+}
+.meta-cell .v.green {
+  color: var(--brand-dark);
+}
+.status {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+.status.active {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+.status.sold {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.status.hidden {
+  background: var(--gray-soft);
+  color: var(--muted);
+}
+.big-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.btn-copy {
+  background: var(--info-soft);
+  color: var(--info);
+  font-weight: 700;
+  padding: 13px;
+  border-radius: 11px;
+}
+.btn-publish {
+  background: var(--brand);
+  color: white;
+  font-weight: 700;
+  padding: 13px;
+  border-radius: 11px;
+}
+.small-actions {
+  display: flex;
+  gap: 8px;
+}
+.small-actions a,
+.small-actions button {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+.small-actions .danger {
+  color: var(--danger);
+}
+.description {
+  background: var(--field);
+  border-radius: 10px;
+  padding: 14px;
+  white-space: pre-wrap;
+  line-height: 1.55;
+  max-height: 320px;
+  overflow: auto;
+  font-size: 14px;
+}
+.desc-empty {
+  color: var(--muted);
+  font-style: italic;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.item:last-child {
+  border-bottom: none;
+}
+.item .grow {
+  flex: 1;
+  min-width: 0;
+}
+.item .name {
+  font-weight: 600;
+}
+.item .sub {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.sale-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.sale-status.pending {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.sale-status.paid {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+.sale-status.cancelled {
+  background: var(--gray-soft);
+  color: var(--muted);
+}
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 22px 0;
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--toast-bg);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  z-index: 60;
+}
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  cursor: zoom-out;
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+  object-fit: contain;
+}

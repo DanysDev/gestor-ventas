@@ -1,0 +1,151 @@
+<div class="head">
+  <h1>{{ product.value()?.title }}</h1>
+  <a class="back" routerLink="/productos">← Productos</a>
+</div>
+
+@if (product.isLoading() && !product.hasValue()) {
+  <p>Cargando…</p>
+} @else if (product.hasValue()) {
+  @let p = product.value()!;
+  <div class="layout">
+    <div class="card">
+      @if (p.images.length) {
+        <div class="gallery">
+          @for (img of p.images; track img.path) {
+            <img [src]="apiAsset(img.path)" alt="" loading="lazy" (click)="lightbox.set(img.path)" />
+          }
+        </div>
+      } @else {
+        <p class="empty">Sin fotos registradas.</p>
+      }
+    </div>
+
+    <div class="card">
+      <div [class]="'status ' + p.status">{{ statusLabel() }}</div>
+
+      <div class="meta">
+        <div class="meta-cell">
+          <div class="k">Proveedor</div>
+          <div class="v">{{ p.supplier?.name ?? '—' }}</div>
+        </div>
+        <div class="meta-cell">
+          <div class="k">Precio</div>
+          <div class="v">{{ formatMoney(p.price) }}</div>
+        </div>
+        @if (p.supplierPrice && p.supplierPrice > 0) {
+          <div class="meta-cell">
+            <div class="k">Precio del proveedor</div>
+            <div class="v">{{ formatMoney(p.supplierPrice) }}</div>
+          </div>
+        }
+        @if (p.sizes?.trim()) {
+          <div class="meta-cell">
+            <div class="k">Tallas</div>
+            <div class="v">{{ p.sizes }}</div>
+          </div>
+        }
+        <div class="meta-cell">
+          <div class="k">Mi comisión</div>
+          <div class="v green">{{ commissionLabel() }}</div>
+        </div>
+        <div class="meta-cell">
+          <div class="k">Publicaciones</div>
+          <div class="v">{{ p.publicationsCount }}@if (p.lastPublishedAt) {
+            <span class="hint">últ. {{ dateText(p.lastPublishedAt) }}</span>
+          }</div>
+        </div>
+        <div class="meta-cell">
+          <div class="k">Vendidos</div>
+          <div class="v">{{ p.soldQty }} ({{ p.salesCount }} ventas)</div>
+        </div>
+        <div class="meta-cell">
+          <div class="k">Ganado</div>
+          <div class="v green">{{ formatMoney(p.earnedCommission, p.commissionCurrency ?? 'USD') }}</div>
+        </div>
+      </div>
+
+      <div class="big-actions">
+        <button class="btn-copy" (click)="copyPublish()">⧉ Copiar para publicar</button>
+        <button
+          class="btn-publish"
+          (click)="publish()"
+          [disabled]="p.status !== 'active'"
+        >
+          📢 Publicar y copiar
+        </button>
+      </div>
+
+      <div class="small-actions">
+        <a [routerLink]="['/productos', p._id, 'editar']">✏️ Editar</a>
+        <a routerLink="/ventas" [queryParams]="{ producto: p._id }">➕ Venta</a>
+        <button (click)="setStatus('active')">Activar</button>
+        <button (click)="setStatus('sold')">Vendido</button>
+        <button (click)="setStatus('hidden')">Ocultar</button>
+        <button class="danger" (click)="remove()" aria-label="Eliminar producto" >🗑️</button>
+      </div>
+
+      <h2 style="margin-top: 18px">Descripción publicable</h2>
+      @if (p.description) {
+        <div class="description">{{ p.description }}</div>
+      } @else {
+        <p class="desc-empty">Sin descripción. Edita el producto para añadirla.</p>
+      }
+      @if (p.sizes?.trim()) {
+        <p class="hint" style="margin-top: 8px">📏 Tallas disponibles: {{ p.sizes }}</p>
+      }
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 16px">
+    <h2>Historial de ventas</h2>
+    @if (sales.value()?.length) {
+      <div class="list">
+        @for (s of sales.value() ?? []; track s._id) {
+          <div class="item">
+            <div class="grow">
+              <div class="name">
+                {{ s.clientName || 'Cliente sin nombre' }} · {{ formatMoney(s.salePrice) }}
+              </div>
+              <div class="sub">
+                {{ dateText(s.saleDate) }} · {{ s.deliveryType === 'mensajeria' ? 'Mensajería' : 'Recogida' }} ·
+                comisión {{ formatMoney(s.commission, s.commissionCurrency ?? 'USD') }}
+              </div>
+            </div>
+            <span [class]="'sale-status ' + s.status">
+              {{ s.status === 'pending' ? 'por cobrar' : s.status === 'paid' ? 'cobrada' : 'cancelada' }}
+            </span>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty">Sin ventas registradas aún.</p>
+    }
+  </div>
+
+  <div class="card" style="margin-top: 16px">
+    <h2>Últimas publicaciones</h2>
+    @if (publications.value()?.length) {
+      <div class="list">
+        @for (pub of publications.value()?.slice(0, 10); track pub._id) {
+          <div class="item">
+            <div class="grow">
+              <div class="sub">📢 {{ dateText(pub.createdAt) }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty">Aún sin publicaciones. Usa "Publicar y copiar".</p>
+    }
+  </div>
+}
+
+@if (lightbox()) {
+  <div class="lightbox" (click)="lightbox.set('')">
+    <img [src]="apiAsset(lightbox())" alt="" />
+  </div>
+}
+
+@if (toast()) {
+  <div class="toast">{{ toast() }}</div>
+}

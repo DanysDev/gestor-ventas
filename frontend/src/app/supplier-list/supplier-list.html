@@ -1,0 +1,110 @@
+<div class="page-head">
+  <h1>Proveedores</h1>
+  @if (!creating()) {
+    <button class="btn-toggle" (click)="startNew()">＋ Añadir</button>
+  }
+</div>
+
+@if (creating()) {
+  <form class="form-card" (submit)="onSubmit(); $event.preventDefault()">
+    <h2>{{ editingId() ? 'Editar proveedor' : 'Nuevo proveedor' }}</h2>
+    @if (error()) {
+      <div class="error-box">{{ error() }}</div>
+    }
+    <div class="field">
+      <label>Nombre del proveedor</label>
+      <input [formField]="supplierForm.name" placeholder="Ej: El martillo de thor" />
+      @if (supplierForm.name().touched() && supplierForm.name().errors().length) {
+        <span class="field-error">{{ supplierForm.name().errors()[0].message }}</span>
+      }
+    </div>
+    <div class="field">
+      <label>Contacto (teléfono / WhatsApp)</label>
+      <input [formField]="supplierForm.contact" placeholder="+53 5…" />
+    </div>
+    <div class="field">
+      <label>Notas</label>
+      <textarea [formField]="supplierForm.notes" placeholder="Formas de pago, condiciones…"></textarea>
+    </div>
+    <div class="field">
+      <label>Vale de venta — Recogida en local</label>
+      <textarea
+        [formField]="supplierForm.voucherPickup"
+        placeholder="Texto exacto del vale para recoger en el local del proveedor…"
+      ></textarea>
+      @if (supplierForm.voucherPickup().value().length > 2000) {
+        <span class="field-error">Máximo 2000 caracteres</span>
+      }
+    </div>
+    <div class="field">
+      <label>Vale de venta — Entrega (mensajería)</label>
+      <textarea
+        [formField]="supplierForm.voucherDelivery"
+        placeholder="Texto exacto del vale para envío por mensajería (si difiere del de recogida)…"
+      ></textarea>
+      @if (supplierForm.voucherDelivery().value().length > 2000) {
+        <span class="field-error">Máximo 2000 caracteres</span>
+      }
+    </div>
+    <div class="actions">
+      <button class="btn-cancel" type="button" (click)="reset()">Cancelar</button>
+      <button class="btn-primary" type="submit" [disabled]="saving() || supplierForm().invalid()">
+        {{ saving() ? 'Guardando…' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+}
+
+@if (suppliers.hasValue() && suppliers.value()!.length === 0) {
+  <div class="empty-state">Aún no hay proveedores. Añade el primero o importa automáticamente desde tu carpeta.</div>
+}
+
+@for (s of suppliers.value() ?? []; track s._id) {
+  <article class="sup">
+    <div class="sup-head">
+      <div class="avatar">🤝</div>
+      <div class="grow">
+        <div class="name">{{ s.name }}</div>
+        <div class="sub">
+          {{ countFor(s._id) }} productos
+          @if (s.contact) {
+            <span><span class="sep">·</span>{{ s.contact }}</span>
+          }
+        </div>
+      </div>
+      <div class="row-actions">
+        <a [routerLink]="['/productos']" [queryParams]="{ proveedor: s._id }">Ver</a>
+        <button (click)="startEdit(s)">Editar</button>
+        <button class="danger" (click)="remove(s)" aria-label="Eliminar" >🗑️</button>
+      </div>
+    </div>
+    @if (s.voucherPickup || s.voucherDelivery) {
+      <div class="vouchers">
+        @if (s.voucherPickup) {
+          <div class="voucher">
+            <div class="vlabel-row">
+              <span class="v-label">
+                {{ s.voucherDelivery ? '🏬 Recogida en local' : '💳 Vale de venta' }}
+              </span>
+              <button class="v-copy" (click)="copy(s.voucherPickup!, 'recogida')">⧉ Copiar</button>
+            </div>
+            <div class="v-text">{{ s.voucherPickup }}</div>
+          </div>
+        }
+        @if (s.voucherDelivery) {
+          <div class="voucher">
+            <div class="vlabel-row">
+              <span class="v-label">🚚 Entrega (mensajería)</span>
+              <button class="v-copy" (click)="copy(s.voucherDelivery!, 'entrega')">⧉ Copiar</button>
+            </div>
+            <div class="v-text">{{ s.voucherDelivery }}</div>
+          </div>
+        }
+      </div>
+    }
+  </article>
+}
+
+@if (toast()) {
+  <div class="toast">{{ toast() }}</div>
+}

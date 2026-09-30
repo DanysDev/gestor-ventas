@@ -1,0 +1,31 @@
+<main class="app-root">
+  @if (checking()) {
+    <div class="locker">
+      <div class="lock-card">Cargando…</div>
+    </div>
+  } @else if (locked()) {
+    <div class="locker">
+      <form class="lock-card" (submit)="unlock(); $event.preventDefault()">
+        <div class="lock-icon">🔒</div>
+        <h1>Acceso protegido</h1>
+        <p>Introduce tu PIN para entrar a tu sistema de ventas.</p>
+        <input
+          type="password"
+          inputmode="numeric"
+          placeholder="Tu PIN"
+          aria-label="PIN de acceso"
+          autocomplete="off"
+          [value]="pin()"
+          (input)="pin.set($any($event.target).value)"
+          autofocus
+        />
+        @if (error()) {
+          <div class="lock-error">{{ error() }}</div>
+        }
+        <button type="submit" [disabled]="!pin()">Entrar</button>
+      </form>
+    </div>
+  } @else {
+    <router-outlet />
+  }
+</main>

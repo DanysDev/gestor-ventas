@@ -1,0 +1,132 @@
+.page-head h1 {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.card h2 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+.card p.desc {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.field label {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.field input {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--field);
+  width: 100%;
+}
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;
+  font-size: 13.5px;
+  color: inherit;
+  cursor: pointer;
+  margin-top: 6px;
+}
+.checkbox-row input {
+  width: 18px;
+  height: 18px;
+}
+.btn-primary {
+  width: 100%;
+  background: var(--brand);
+  color: white;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 11px;
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+}
+.btn-import {
+  background: var(--info-soft);
+  color: var(--info);
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 11px;
+  width: 100%;
+}
+.theme-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.theme-opt {
+  flex: 1;
+  min-width: 96px;
+  padding: 12px;
+  border-radius: 11px;
+  font-weight: 700;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-align: center;
+}
+.theme-opt.on {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+  border-color: transparent;
+}
+.result {
+  margin-top: 12px;
+  background: var(--ok-soft);
+  border: 1px solid var(--ok-border);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+}
+.result.error {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.error-box {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--toast-bg);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  z-index: 60;
+}
+@media (min-width: 900px) {
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+}

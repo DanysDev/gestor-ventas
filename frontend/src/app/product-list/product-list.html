@@ -1,0 +1,88 @@
+<div class="page-head">
+  <h1>Productos</h1>
+  <a class="btn-new" routerLink="/productos/nuevo">＋ Nuevo</a>
+</div>
+
+<div class="filters">
+  <input
+    #search
+    placeholder="Buscar producto…"
+    [ngModel]="q()"
+    (ngModelChange)="q.set($event)"
+  />
+  <select [ngModel]="supplierId()" (ngModelChange)="supplierId.set($event)">
+    <option value="">Todos los proveedores</option>
+    @for (s of suppliers.value() ?? []; track s._id) {
+      <option [value]="s._id">{{ s.name }}</option>
+    }
+  </select>
+  <select [ngModel]="status()" (ngModelChange)="status.set($event)">
+    <option value="">Todos</option>
+    <option value="active">Activos</option>
+    <option value="sold">Vendidos</option>
+    <option value="hidden">Ocultos</option>
+  </select>
+</div>
+
+@if (products.isLoading() && !products.hasValue()) {
+  <div class="list" aria-hidden="true">
+    @for (i of [0, 1, 2, 3, 4]; track i) {
+      <article class="pcard">
+        <div class="sk sk-thumb"></div>
+        <div class="body">
+          <div class="sk sk-line" style="width: 70%"></div>
+          <div class="sk sk-line"></div>
+          <div class="sk sk-line" style="width: 40%"></div>
+        </div>
+      </article>
+    }
+  </div>
+} @else if (products.hasValue() && products.value()!.length === 0) {
+  <div class="empty-state">
+    No hay productos con esos filtros. Registra uno nuevo o ajústalos.
+  </div>
+} @else {
+  <div class="list">
+    @for (p of products.value() ?? []; track p._id) {
+      <article class="pcard">
+        @if (p.images.length > 0) {
+          <img class="thumb" [src]="apiAsset(p.images[0].path)" alt="" loading="lazy" />
+        } @else {
+          <div class="thumb-placeholder">🖼️</div>
+        }
+        <div class="body">
+          <div [class]="'status ' + p.status">{{ statusLabel(p) }}</div>
+          <h2 class="title">{{ p.title }}</h2>
+          <div class="supplier">🏷️ {{ p.supplier?.name ?? 'Sin proveedor' }}</div>
+          <div class="price-row">
+            <span class="price">{{ formatMoney(p.price) }}</span>
+            <span class="commission">+ {{ commissionLabel(p) }}</span>
+          </div>
+          @if (p.supplierPrice && p.supplierPrice > 0) {
+            <div class="supplier-price">🏭 Proveedor: {{ formatMoney(p.supplierPrice) }}</div>
+          }
+          <div class="metrics">
+            <span>📢 <b>{{ p.publicationsCount }}</b> pub</span>
+            <span>✅ <b>{{ p.soldQty }}</b> vend</span>
+            <span>💰 <b>{{ earnedLabel(p) }}</b></span>
+          </div>
+          <div class="actions">
+            <a class="btn-detail" [routerLink]="['/productos', p._id]">Ver</a>
+            <button class="btn-copy" (click)="copyPublish(settings.value()!, p)">⧉ Copiar</button>
+            <button
+              class="btn-publish"
+              (click)="publish(p)"
+              [disabled]="p.status !== 'active'"
+            >
+              Publicar
+            </button>
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+}
+
+@if (toast()) {
+  <div class="toast">{{ toast() }}</div>
+}
