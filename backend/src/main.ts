@@ -8,19 +8,11 @@ async function bootstrap() {
   const config = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
+  // CORS permisivo: el origen se refleja tal cual.
+  // La protección real la da el PIN (x-app-pin), no la lista de dominios.
+  // Así no hay que perseguir la URL exacta de Pages en cada deploy/preview.
   app.enableCors({
-    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      const allowed = [
-        config.get<string>('FRONTEND_URL'),
-        'http://localhost:4200',
-        'http://localhost:3000',
-      ].filter(Boolean) as string[];
-      if (!origin || allowed.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: true,
     credentials: true,
   });
   app.useGlobalPipes(
