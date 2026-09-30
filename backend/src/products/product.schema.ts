@@ -28,6 +28,9 @@ export class Product {
   @Prop({ default: '' })
   sizes: string;
 
+  @Prop({ default: '' })
+  salesNotes: string;
+
   @Prop({ required: true, min: 0 })
   price: number;
 

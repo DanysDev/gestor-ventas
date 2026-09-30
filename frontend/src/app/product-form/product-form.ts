@@ -19,6 +19,7 @@ interface ProductModel {
   status: 'active' | 'sold' | 'hidden';
   description: string;
   sizes: string;
+  salesNotes: string;
 }
 
 const blankModel: ProductModel = {
@@ -35,6 +36,7 @@ const blankModel: ProductModel = {
   status: 'active',
   description: '',
   sizes: '',
+  salesNotes: '',
 };
 
 @Component({
@@ -238,6 +240,7 @@ export class ProductForm {
         status: p.status,
         description: p.description,
         sizes: p.sizes ?? '',
+        salesNotes: p.salesNotes ?? '',
       });
       this.imagesSig.set(p.images);
       this.imagesText.set(p.images.map((i) => i.path).join('\n'));
@@ -327,6 +330,7 @@ export class ProductForm {
           status: m.status,
           description: m.description,
           sizes: m.sizes,
+          salesNotes: m.salesNotes,
           images: this.imagesSig(),
         };
         if (this.id) {

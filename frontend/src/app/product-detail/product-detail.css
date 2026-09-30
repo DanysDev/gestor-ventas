@@ -151,6 +151,85 @@
   color: var(--muted);
   font-style: italic;
 }
+.notes-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.notes-head h2 {
+  margin-bottom: 0;
+}
+.private-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.notes-view {
+  background: var(--field);
+  border-left: 4px solid var(--brand);
+  border-radius: 10px;
+  padding: 14px;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 15px;
+  max-height: 340px;
+  overflow: auto;
+}
+.notes-area {
+  width: 100%;
+  min-height: 180px;
+  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 1.55;
+  font-family: inherit;
+  color: inherit;
+  background: var(--field);
+  border: 2px solid var(--brand);
+  border-radius: 12px;
+  padding: 14px;
+  resize: vertical;
+}
+.notes-area:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--brand-soft);
+}
+.notes-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+@media (min-width: 600px) {
+  .notes-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.notes-actions button {
+  min-height: 48px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 15px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+.notes-actions .btn-save-notes {
+  background: var(--brand);
+  color: white;
+  border: none;
+}
+.notes-actions .btn-save-notes:disabled {
+  opacity: 0.6;
+}
+.notes-actions .full {
+  grid-column: 1 / -1;
+}
 .list {
   display: flex;
   flex-direction: column;

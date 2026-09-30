@@ -23,6 +23,7 @@ export interface Product {
   title: string;
   description: string;
   sizes?: string;
+  salesNotes?: string;
   price: number;
   supplierPrice?: number;
   commissionType: CommissionType;

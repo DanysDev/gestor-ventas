@@ -22,6 +22,9 @@ export class ProductDetail {
   protected readonly reload = signal(0);
   protected readonly toast = signal('');
   protected readonly lightbox = signal('');
+  protected readonly editingNotes = signal(false);
+  protected readonly notesDraft = signal('');
+  protected readonly savingNotes = signal(false);
 
   protected readonly product = resource<Product, { id: string; reload: number }>({
     params: () => ({ id: this.id, reload: this.reload() }),
@@ -103,6 +106,42 @@ export class ProductDetail {
     this.toast.set(ok ? 'Publicado ✓ y copiado. Pégalo ahora.' : 'Publicado ✓ (contador +1)');
     this.reload.update((n) => n + 1);
     setTimeout(() => this.toast.set(''), 3000);
+  }
+
+  protected startEditNotes(): void {
+    this.notesDraft.set(this.product.value()?.salesNotes ?? '');
+    this.editingNotes.set(true);
+  }
+
+  protected cancelEditNotes(): void {
+    this.editingNotes.set(false);
+  }
+
+  async saveNotes(): Promise<void> {
+    const p = this.product.value();
+    if (!p || this.savingNotes()) return;
+    this.savingNotes.set(true);
+    try {
+      await this.data.patch(`/products/${p._id}`, {
+        salesNotes: this.notesDraft(),
+      });
+      this.editingNotes.set(false);
+      this.reload.update((n) => n + 1);
+      this.toast.set('Notas guardadas ✓');
+    } catch {
+      this.toast.set('No se pudo guardar');
+    } finally {
+      this.savingNotes.set(false);
+      setTimeout(() => this.toast.set(''), 2500);
+    }
+  }
+
+  async copyNotes(): Promise<void> {
+    const text = this.product.value()?.salesNotes ?? '';
+    if (!text.trim()) return;
+    const ok = await copyToClipboard(text);
+    this.toast.set(ok ? 'Notas copiadas ✓' : 'No se pudo copiar');
+    setTimeout(() => this.toast.set(''), 2500);
   }
 
   async setStatus(status: 'active' | 'sold' | 'hidden'): Promise<void> {

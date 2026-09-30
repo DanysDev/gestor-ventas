@@ -96,6 +96,43 @@
     </div>
   </div>
 
+  <div class="card notes-card" style="margin-top: 16px">
+    <div class="notes-head">
+      <h2>📝 Mis notas para vender</h2>
+      <span class="private-badge">🔒 solo tú</span>
+    </div>
+    @if (editingNotes()) {
+      <textarea
+        class="notes-area"
+        [value]="notesDraft()"
+        (input)="notesDraft.set($any($event.target).value)"
+        placeholder="Ej:&#10;• Tela fresca, no destiñe&#10;• Horma pequeña, recomendar un número más&#10;• Si pregunta por envío: $150 a La Habana&#10;• No aceptar pago por adelantado sin vale"
+        rows="7"
+      ></textarea>
+      <div class="notes-actions">
+        <button class="btn-save-notes" (click)="saveNotes()" [disabled]="savingNotes()">
+          {{ savingNotes() ? 'Guardando…' : '💾 Guardar notas' }}
+        </button>
+        <button class="btn-cancel-notes" (click)="cancelEditNotes()" [disabled]="savingNotes()">
+          Cancelar
+        </button>
+      </div>
+    } @else {
+      @if (p.salesNotes?.trim()) {
+        <div class="notes-view">{{ p.salesNotes }}</div>
+        <div class="notes-actions">
+          <button class="btn-copy-notes" (click)="copyNotes()">⧉ Copiar</button>
+          <button class="btn-edit-notes" (click)="startEditNotes()">✏️ Editar</button>
+        </div>
+      } @else {
+        <p class="desc-empty">Sin notas. Escribe aquí los detalles que te preguntan los clientes: medidas, material, envíos, respuestas a objeciones…</p>
+        <div class="notes-actions">
+          <button class="btn-edit-notes full" (click)="startEditNotes()">➕ Añadir notas</button>
+        </div>
+      }
+    }
+  </div>
+
   <div class="card" style="margin-top: 16px">
     <h2>Historial de ventas</h2>
     @if (sales.value()?.length) {

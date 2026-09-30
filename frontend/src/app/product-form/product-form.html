@@ -146,6 +146,15 @@
       </div>
 
       <div class="field">
+        <label>Mis notas para vender (privado, opcional) 🔒</label>
+        <textarea
+          [formField]="productForm.salesNotes"
+          placeholder="Detalles para responder al cliente sin trabarte: medidas, material, envíos, respuestas…"
+          rows="5"
+        ></textarea>
+      </div>
+
+      <div class="field">
         <label>Tallas / números disponibles (opcional)</label>
         <input
           [formField]="productForm.sizes"
