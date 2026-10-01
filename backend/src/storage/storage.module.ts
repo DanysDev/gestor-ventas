@@ -2,6 +2,7 @@ import { Module, Global, DynamicModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LocalStorageProvider } from './local-storage.provider.js';
 import { R2StorageProvider } from './r2-storage.provider.js';
+import { CloudinaryStorageProvider } from './cloudinary-storage.provider.js';
 import { StorageProvider, STORAGE_PROVIDER_TOKEN } from './storage.interface.js';
 
 @Global()
@@ -14,6 +15,12 @@ export class StorageModule {
         {
           provide: STORAGE_PROVIDER_TOKEN,
           useFactory: (config: ConfigService): StorageProvider => {
+            const useCloudinary = config.get<string>('CLOUDINARY_CLOUD_NAME') &&
+              config.get<string>('CLOUDINARY_API_KEY') &&
+              config.get<string>('CLOUDINARY_API_SECRET');
+            if (useCloudinary) {
+              return new CloudinaryStorageProvider(config);
+            }
             const useR2 = config.get<string>('R2_ACCOUNT_ID') &&
               config.get<string>('R2_ACCESS_KEY_ID') &&
               config.get<string>('R2_SECRET_ACCESS_KEY') &&
