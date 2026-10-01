@@ -18,6 +18,8 @@ function cleanSegment(name: string, fallback: string): string {
 
 @Injectable()
 export class CloudinaryStorageProvider implements StorageProvider {
+  private readonly cloudName: string;
+
   constructor(config: ConfigService) {
     const cloudName = config.get<string>('CLOUDINARY_CLOUD_NAME');
     const apiKey = config.get<string>('CLOUDINARY_API_KEY');
@@ -27,6 +29,7 @@ export class CloudinaryStorageProvider implements StorageProvider {
         'Falta CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY o CLOUDINARY_API_SECRET',
       );
     }
+    this.cloudName = cloudName;
     cloudinary.config({
       cloud_name: cloudName,
       api_key: apiKey,
@@ -59,9 +62,13 @@ export class CloudinaryStorageProvider implements StorageProvider {
     if (/^https?:\/\//.test(key)) {
       return key;
     }
-    return (
-      cloudinary.url(key, { secure: true, resource_type: 'image' }) ?? key
-    );
+    // URL manual sin versión: Cloudinary interpreta el `.ext` final como
+    // formato y por eso el public_id guardado nunca lleva extensión.
+    const encoded = key
+      .split('/')
+      .map((seg) => encodeURIComponent(seg))
+      .join('/');
+    return `https://res.cloudinary.com/${this.cloudName}/image/upload/${encoded}`;
   }
 
   async uploadFiles(
@@ -85,12 +92,14 @@ export class CloudinaryStorageProvider implements StorageProvider {
       );
       const ext = dot > 0 ? original.slice(dot) : '.jpg';
       const stamp = Date.now().toString(36);
-      const publicId = `${folder}/${base}-${stamp}${ext}`;
+      // Sin extensión: Cloudinary usa el `.ext` final como formato de
+      // entrega y entonces nunca encuentra el archivo (error 404).
+      const publicId = `${folder}/${base}-${stamp}`;
       const finalKey = await this.upload(publicId, file.buffer, file.mimetype);
       saved.push({
         key: finalKey,
         url: this.getPublicUrl(finalKey),
-        filename: finalKey.split('/').pop() ?? original,
+        filename: `${base}-${stamp}${ext}`,
       });
     }
     return saved;
