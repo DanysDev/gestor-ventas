@@ -12,9 +12,22 @@
       @if (p.images.length) {
         <div class="gallery">
           @for (img of p.images; track img.path) {
-            <img [src]="apiAsset(img.path)" alt="" loading="lazy" (click)="lightbox.set(img.path)" />
+            <figure class="shot">
+              <img [src]="apiAsset(img.path)" alt="" loading="lazy" (click)="lightbox.set(img.path)" />
+              <a
+                class="shot-download"
+                [href]="assetDownloadUrl(img.path, img.filename)"
+                [attr.download]="img.filename"
+                (click)="$event.stopPropagation()"
+                title="Descargar esta foto"
+                >⬇</a
+              >
+            </figure>
           }
         </div>
+        <button class="btn-zip" type="button" (click)="downloadAll(p)">
+          ⬇ Descargar todas las fotos ({{ p.images.length }})
+        </button>
       } @else {
         <p class="empty">Sin fotos registradas.</p>
       }
@@ -180,6 +193,13 @@
 @if (lightbox()) {
   <div class="lightbox" (click)="lightbox.set('')">
     <img [src]="apiAsset(lightbox())" alt="" />
+    <a
+      class="lightbox-download"
+      [href]="assetDownloadUrl(lightbox())"
+      download
+      (click)="$event.stopPropagation()"
+      >⬇ Descargar esta foto</a
+    >
   </div>
 }
 

@@ -22,6 +22,18 @@ export function apiAsset(path: string): string {
   return `${API_BASE}/assets/${encodeURI(path)}`;
 }
 
+export function assetDownloadUrl(path: string, name?: string): string {
+  const nameParam = name ? `&name=${encodeURIComponent(name)}` : '';
+  return `${API_BASE}/assets/download?path=${encodeURIComponent(path)}${nameParam}`;
+}
+
+export function assetZipUrl(paths: string[], name: string): string {
+  const query = paths
+    .map((p) => `paths=${encodeURIComponent(p)}`)
+    .join('&');
+  return `${API_BASE}/assets/download-zip?${query}&name=${encodeURIComponent(name)}`;
+}
+
 function pinHeaders(): Record<string, string> {
   const pin =
     typeof sessionStorage !== 'undefined'

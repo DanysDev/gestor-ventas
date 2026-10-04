@@ -1,7 +1,7 @@
 import { Component, inject, resource, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { DataService, apiAsset, buildPublishText, copyToClipboard, formatMoney } from '../core/data.js';
+import { DataService, apiAsset, assetDownloadUrl, assetZipUrl, buildPublishText, copyToClipboard, formatMoney } from '../core/data.js';
 import { Product, Sale, Settings } from '../core/types.js';
 import { effectiveCommission } from '../core/types.js';
 
@@ -18,6 +18,17 @@ export class ProductDetail {
 
   protected readonly id = this.route.snapshot.paramMap.get('id') ?? '';
   protected readonly formatMoney = formatMoney;
+  protected readonly assetDownloadUrl = assetDownloadUrl;
+
+  protected downloadAll(product: Product): void {
+    const paths = product.images.map((i) => i.path);
+    if (!paths.length) {
+      return;
+    }
+    window.location.href = assetZipUrl(paths, product.title || 'fotos');
+    this.toast.set('Descargando…');
+    setTimeout(() => this.toast.set(''), 2500);
+  }
 
   protected readonly reload = signal(0);
   protected readonly toast = signal('');
