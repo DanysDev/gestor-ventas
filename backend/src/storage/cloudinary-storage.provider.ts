@@ -9,8 +9,11 @@ import {
 
 function cleanSegment(name: string, fallback: string): string {
   const cleaned = (name || '')
-    .trim()
+    .normalize('NFC')
     .replace(/[<>:"/\\|?*#%+&]/g, ' ')
+    // Cloudinary rechaza emojis en el nombre (error 500 al subir), así que
+    // solo se conservan letras (con tilde), números y signos básicos.
+    .replace(/[^\p{L}\p{N} ._\-()]/gu, '')
     .replace(/\s+/g, ' ')
     .trim();
   return cleaned || fallback;
@@ -90,7 +93,8 @@ export class CloudinaryStorageProvider implements StorageProvider {
         dot > 0 ? original.slice(0, dot) : original,
         'imagen',
       );
-      const ext = dot > 0 ? original.slice(dot) : '.jpg';
+      const rawExt = dot > 0 ? original.slice(dot) : '.jpg';
+      const ext = /^\.[a-z0-9]{2,5}$/i.test(rawExt) ? rawExt : '.jpg';
       const stamp = Date.now().toString(36);
       // Sin extensión: Cloudinary usa el `.ext` final como formato de
       // entrega y entonces nunca encuentra el archivo (error 404).
