@@ -2,7 +2,7 @@ import { Component, computed, inject, resource, signal } from '@angular/core';
 import { FormField, disabled, form, min, required, submit } from '@angular/forms/signals';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { DataService, copyToClipboard, formatMoney } from '../core/data.js';
+import { DataService, buildPublishText, copyToClipboard, formatMoney } from '../core/data.js';
 import { Product, ProductImage, Settings, Supplier } from '../core/types.js';
 
 interface ProductModel {
@@ -219,7 +219,7 @@ export class ProductForm {
     const body = [head, priceLine, sizesLine, m.description.trim()]
       .filter(Boolean)
       .join('\n\n');
-    return link ? `${body}\n\n${link}` : body;
+    return buildPublishText(body, link);
   });
 
   async ngOnInit() {

@@ -1,7 +1,7 @@
 import { Component, inject, resource, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { DataService, apiAsset, copyToClipboard, formatMoney } from '../core/data.js';
+import { DataService, apiAsset, buildPublishText, copyToClipboard, formatMoney } from '../core/data.js';
 import { Product, Sale, Settings } from '../core/types.js';
 import { effectiveCommission } from '../core/types.js';
 
@@ -90,7 +90,7 @@ export class ProductDetail {
     const p = this.product.value();
     if (!p) return;
     const link = this.settings.value()?.contactLink ?? '';
-    const text = link ? `${p.description}\n\n${link}` : p.description;
+    const text = buildPublishText(p.description, link);
     const ok = await copyToClipboard(text);
     this.toast.set(ok ? 'Publicación copiada ✓ Pégalo donde quieras.' : 'No se pudo copiar');
     setTimeout(() => this.toast.set(''), 3000);
@@ -100,7 +100,7 @@ export class ProductDetail {
     const p = this.product.value();
     if (!p) return;
     const link = this.settings.value()?.contactLink ?? '';
-    const text = link ? `${p.description}\n\n${link}` : p.description;
+    const text = buildPublishText(p.description, link);
     const ok = await copyToClipboard(text);
     await this.data.post(`/products/${p._id}/publish`);
     this.toast.set(ok ? 'Publicado ✓ y copiado. Pégalo ahora.' : 'Publicado ✓ (contador +1)');

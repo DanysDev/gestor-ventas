@@ -1,7 +1,7 @@
 import { Component, inject, resource, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DataService, apiAsset, copyToClipboard, formatMoney, ProductQuery } from '../core/data.js';
+import { DataService, apiAsset, buildPublishText, copyToClipboard, formatMoney, ProductQuery } from '../core/data.js';
 import { Product, Settings, Supplier } from '../core/types.js';
 
 @Component({
@@ -97,9 +97,7 @@ export class ProductList {
       this.toast.set('Solo productos activos');
       return;
     }
-    const text = settings.contactLink
-      ? `${p.description}\n\n${settings.contactLink}`
-      : p.description;
+    const text = buildPublishText(p.description, settings.contactLink);
     const ok = await copyToClipboard(text);
     this.toast.set(ok ? 'Copiado. Pégalo donde lo vayas a publicar.' : 'No se pudo copiar');
     setTimeout(() => this.toast.set(''), 2500);

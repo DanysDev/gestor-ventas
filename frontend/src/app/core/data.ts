@@ -129,6 +129,14 @@ export class DataService {
   }
 }
 
+export function buildPublishText(description: string, contactLink?: string): string {
+  const desc = (description ?? '').trim();
+  const link = (contactLink ?? '').trim();
+  if (!link) return desc;
+  if (!desc) return `Contacteme --> ${link}`;
+  return `Contacteme --> ${link}\n\n${desc}`;
+}
+
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);

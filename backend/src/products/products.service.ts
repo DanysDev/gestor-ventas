@@ -220,12 +220,14 @@ export class ProductsService {
   async publicationText(id: string): Promise<{ text: string }> {
     const product = await this.findByIdOrThrow(id);
     const settings = await this.settingsService.get();
-    let text = product.description;
+    let text = product.description ?? '';
     if (product.sizes) {
       text = `${text}\nTallas disponibles: ${product.sizes}`;
     }
-    if (settings.contactLink) {
-      text = `${text}\n\n${settings.contactLink}`;
+    text = text.trim();
+    const link = settings.contactLink?.trim() ?? '';
+    if (link) {
+      text = text ? `Contacteme --> ${link}\n\n${text}` : `Contacteme --> ${link}`;
     }
     return { text };
   }
