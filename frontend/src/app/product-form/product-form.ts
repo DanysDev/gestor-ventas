@@ -258,6 +258,15 @@ export class ProductForm {
     );
   }
 
+  protected readonly uploadReady = computed(() => {
+    const m = this.model();
+    return (
+      this.suppliers.hasValue() &&
+      m.supplierId.trim() !== '' &&
+      m.title.trim() !== ''
+    );
+  });
+
   protected async upload(event: Event) {
     const input = event.target as HTMLInputElement;
     const files = Array.from(input.files ?? []);

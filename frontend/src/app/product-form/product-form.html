@@ -185,11 +185,15 @@
             class="btn-upload"
             type="button"
             (click)="fileInput.click()"
-            [disabled]="uploading()"
+            [disabled]="uploading() || !uploadReady()"
           >
             {{ uploading() ? 'Subiendo…' : '📷 Subir imágenes' }}
           </button>
-          <span class="upload-hint">Se guardan dentro de tu carpeta de ventas, en el proveedor y producto.</span>
+          @if (uploadReady() || uploading()) {
+            <span class="upload-hint">Se guardan en la nube con el proveedor y producto.</span>
+          } @else {
+            <span class="upload-hint need">☝️ Primero escribe el título y elige el proveedor de arriba.</span>
+          }
         </div>
       </div>
 
