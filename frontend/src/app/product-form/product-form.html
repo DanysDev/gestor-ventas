@@ -146,6 +146,23 @@
       </div>
 
       <div class="field">
+        <label class="field-check">
+          <input
+            type="checkbox"
+            [checked]="useFacebookDescription()"
+            (change)="onFacebookDescriptionToggle($event)"
+          />
+          Usar descripción para Facebook
+        </label>
+        @if (useFacebookDescription()) {
+          <textarea
+            [formField]="productForm.facebookDescription"
+            placeholder="Descripción optimizada para Facebook (sin emoticonos, sin markdown)…"
+          ></textarea>
+        }
+      </div>
+
+      <div class="field">
         <label>Mis notas para vender (privado, opcional) 🔒</label>
         <textarea
           [formField]="productForm.salesNotes"

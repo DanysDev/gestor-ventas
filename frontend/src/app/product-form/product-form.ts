@@ -18,6 +18,7 @@ interface ProductModel {
   commissionQtyMin: number;
   status: 'active' | 'sold' | 'hidden';
   description: string;
+  facebookDescription: string;
   sizes: string;
   salesNotes: string;
 }
@@ -35,6 +36,7 @@ const blankModel: ProductModel = {
   commissionQtyMin: 2,
   status: 'active',
   description: '',
+  facebookDescription: '',
   sizes: '',
   salesNotes: '',
 };
@@ -97,12 +99,15 @@ export class ProductForm {
     () => this.model().commissionType === 'margin',
   );
 
-  protected readonly marginHint = computed(() => {
+  protected readonly useFacebookDescription = signal(false);
+
+  protected onFacebookDescriptionToggle(event: Event): void {
+    this.useFacebookDescription.set((event.target as HTMLInputElement).checked);
+  }
+
+  protected readonly facebookDescription = computed(() => {
     const m = this.model();
-    if (m.price <= 0 || m.supplierPrice <= 0) return '';
-    const diff = Math.round((m.price - m.supplierPrice) * 100) / 100;
-    if (diff < 0) return '';
-    return `Comisión (diferencia): ${formatMoney(diff)} por unidad. En el vale irá el precio del proveedor.`;
+    return m.facebookDescription || m.description;
   });
 
   protected readonly marginError = computed(() => {
@@ -210,7 +215,7 @@ export class ProductForm {
       : '';
   });
 
-  protected readonly preview = computed(() => {
+protected readonly preview = computed(() => {
     const m = this.model();
     const link = this.settings.value()?.contactLink ?? '';
     const head = m.title ? `📦 ${m.title}` : '';
@@ -219,7 +224,11 @@ export class ProductForm {
     const body = [head, priceLine, sizesLine, m.description.trim()]
       .filter(Boolean)
       .join('\n\n');
-    return buildPublishText(body, link);
+    const fbDesc = this.facebookDescription();
+    if (link && fbDesc) {
+      return `${body}\n\nContacteme --> ${link}\n\n${fbDesc}`;
+    }
+    return body;
   });
 
   async ngOnInit() {

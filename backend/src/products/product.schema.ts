@@ -26,6 +26,9 @@ export class Product {
   description: string;
 
   @Prop({ default: '' })
+  facebookDescription: string;
+
+  @Prop({ default: '' })
   sizes: string;
 
   @Prop({ default: '' })

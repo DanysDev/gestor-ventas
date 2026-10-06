@@ -35,6 +35,10 @@ export class CreateProductDto {
 
   @IsString()
   @IsOptional()
+  facebookDescription?: string;
+
+  @IsString()
+  @IsOptional()
   sizes?: string;
 
   @IsString()
@@ -97,6 +101,10 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsString()
+  facebookDescription?: string;
 
   @IsOptional()
   @IsString()
