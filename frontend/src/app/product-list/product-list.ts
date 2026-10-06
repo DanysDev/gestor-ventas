@@ -97,7 +97,10 @@ export class ProductList {
       this.toast.set('Solo productos activos');
       return;
     }
-    const text = buildPublishText(p.description, settings.contactLink);
+    const text = buildPublishText(
+      p.useFacebookDescription && p.facebookDescription ? p.facebookDescription : p.description,
+      settings.contactLink,
+    );
     const ok = await copyToClipboard(text);
     this.toast.set(ok ? 'Copiado. Pégalo donde lo vayas a publicar.' : 'No se pudo copiar');
     setTimeout(() => this.toast.set(''), 2500);

@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsBoolean,
   IsEnum,
   IsMongoId,
   IsNotEmpty,
@@ -36,6 +37,10 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   facebookDescription?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  useFacebookDescription?: boolean;
 
   @IsString()
   @IsOptional()
@@ -105,6 +110,10 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   facebookDescription?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  useFacebookDescription?: boolean;
 
   @IsOptional()
   @IsString()

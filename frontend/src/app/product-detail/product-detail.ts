@@ -101,7 +101,8 @@ export class ProductDetail {
     const p = this.product.value();
     if (!p) return;
     const link = this.settings.value()?.contactLink ?? '';
-    const text = buildPublishText(p.description, link);
+    const desc = p.useFacebookDescription && p.facebookDescription ? p.facebookDescription : p.description;
+    const text = buildPublishText(desc, link);
     const ok = await copyToClipboard(text);
     this.toast.set(ok ? 'Publicación copiada ✓ Pégalo donde quieras.' : 'No se pudo copiar');
     setTimeout(() => this.toast.set(''), 3000);
@@ -111,7 +112,8 @@ export class ProductDetail {
     const p = this.product.value();
     if (!p) return;
     const link = this.settings.value()?.contactLink ?? '';
-    const text = buildPublishText(p.description, link);
+    const desc = p.useFacebookDescription && p.facebookDescription ? p.facebookDescription : p.description;
+    const text = buildPublishText(desc, link);
     const ok = await copyToClipboard(text);
     await this.data.post(`/products/${p._id}/publish`);
     this.toast.set(ok ? 'Publicado ✓ y copiado. Pégalo ahora.' : 'Publicado ✓ (contador +1)');

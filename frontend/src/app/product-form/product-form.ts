@@ -105,17 +105,20 @@ export class ProductForm {
     this.useFacebookDescription.set((event.target as HTMLInputElement).checked);
   }
 
-  protected readonly facebookDescription = computed(() => {
-    const m = this.model();
-    return m.facebookDescription || m.description;
-  });
-
   protected readonly marginError = computed(() => {
     const m = this.model();
     if (m.supplierPrice > 0 && m.price > 0 && m.price < m.supplierPrice) {
       return 'El precio del proveedor no puede ser mayor que el precio de venta.';
     }
     return '';
+  });
+
+  protected readonly marginHint = computed(() => {
+    const m = this.model();
+    if (m.price <= 0 || m.supplierPrice <= 0) return '';
+    const diff = Math.round((m.price - m.supplierPrice) * 100) / 100;
+    if (diff < 0) return '';
+    return `Comisión (diferencia): ${formatMoney(diff)} por unidad. En el vale irá el precio del proveedor.`;
   });
 
   private prevCommission: {
@@ -215,20 +218,17 @@ export class ProductForm {
       : '';
   });
 
-protected readonly preview = computed(() => {
+  protected readonly preview = computed(() => {
     const m = this.model();
     const link = this.settings.value()?.contactLink ?? '';
     const head = m.title ? `📦 ${m.title}` : '';
     const priceLine = m.price > 0 ? `💰 Precio: ${formatMoney(m.price)}` : '';
     const sizesLine = m.sizes?.trim() ? `📏 Tallas disponibles: ${m.sizes.trim()}` : '';
-    const body = [head, priceLine, sizesLine, m.description.trim()]
+    const desc = this.useFacebookDescription() ? m.facebookDescription.trim() : m.description.trim();
+    const body = [head, priceLine, sizesLine, desc]
       .filter(Boolean)
       .join('\n\n');
-    const fbDesc = this.facebookDescription();
-    if (link && fbDesc) {
-      return `${body}\n\nContacteme --> ${link}\n\n${fbDesc}`;
-    }
-    return body;
+    return buildPublishText(body, link);
   });
 
   async ngOnInit() {
@@ -248,9 +248,11 @@ protected readonly preview = computed(() => {
         commissionQtyMin: p.commissionQtyMin ?? 2,
         status: p.status,
         description: p.description,
+        facebookDescription: p.facebookDescription ?? '',
         sizes: p.sizes ?? '',
         salesNotes: p.salesNotes ?? '',
       });
+      this.useFacebookDescription.set(Boolean(p.useFacebookDescription));
       this.imagesSig.set(p.images);
       this.imagesText.set(p.images.map((i) => i.path).join('\n'));
     } catch (e) {
@@ -347,6 +349,8 @@ protected readonly preview = computed(() => {
             m.commissionQtyType === 'none' ? 0 : m.commissionQtyMin,
           status: m.status,
           description: m.description,
+          facebookDescription: m.facebookDescription,
+          useFacebookDescription: this.useFacebookDescription(),
           sizes: m.sizes,
           salesNotes: m.salesNotes,
           images: this.imagesSig(),

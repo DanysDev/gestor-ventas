@@ -22,6 +22,8 @@ export interface Product {
   _id: string;
   title: string;
   description: string;
+  facebookDescription?: string;
+  useFacebookDescription?: boolean;
   sizes?: string;
   salesNotes?: string;
   price: number;
