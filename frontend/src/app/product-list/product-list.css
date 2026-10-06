@@ -161,7 +161,7 @@
 .actions {
   display: flex;
   gap: 8px;
-  margin-top: 2px;
+  margin-top: auto;
 }
 .actions button,
 .actions a {
@@ -176,7 +176,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-  margin-top: 8px;
+  margin-bottom: 8px;
 }
 .copy-source button {
   padding: 7px;
