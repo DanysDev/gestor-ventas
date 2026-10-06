@@ -162,7 +162,6 @@
   display: flex;
   gap: 8px;
   margin-top: 2px;
-  flex-wrap: nowrap;
 }
 .actions button,
 .actions a {
@@ -172,18 +171,27 @@
   border-radius: 10px;
   font-weight: 700;
   font-size: 13px;
-  min-width: 0;
 }
-.src-select {
-  flex: 1;
-  min-width: 0;
-  padding: 8px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
+.copy-source {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 8px;
+}
+.copy-source button {
+  padding: 7px;
+  border-radius: 9px;
   background: var(--bg);
-  color: var(--ink);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.copy-source button.on {
+  background: var(--info-soft);
+  border-color: var(--info);
+  color: var(--info);
 }
 .btn-detail {
   background: var(--bg);

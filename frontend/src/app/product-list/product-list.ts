@@ -100,11 +100,10 @@ export class ProductList {
       : p.description;
   }
 
-  protected setCopySource(p: Product, event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
+  protected setCopySource(p: Product, source: 'general' | 'facebook'): void {
     this.copySource.update((m) => ({
       ...m,
-      [p._id]: value === 'facebook' ? 'facebook' : 'general',
+      [p._id]: source,
     }));
   }
 
