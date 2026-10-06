@@ -145,6 +145,11 @@
   margin-top: 10px;
   flex-wrap: wrap;
 }
+.copy-hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
 .btn-primary {
   flex: 1;
   background: var(--brand);

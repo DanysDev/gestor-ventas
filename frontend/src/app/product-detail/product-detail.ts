@@ -97,12 +97,22 @@ export class ProductDetail {
     });
   }
 
+  protected readonly copySource = signal<'general' | 'facebook'>('general');
+
+  protected descriptionFor(p: Product, source: 'general' | 'facebook'): string {
+    return source === 'facebook' && p.facebookDescription?.trim()
+      ? p.facebookDescription
+      : p.description;
+  }
+
   async copyPublish(): Promise<void> {
     const p = this.product.value();
     if (!p) return;
     const link = this.settings.value()?.contactLink ?? '';
-    const desc = p.useFacebookDescription && p.facebookDescription ? p.facebookDescription : p.description;
-    const text = buildPublishText(desc, link);
+    const text = buildPublishText(
+      this.descriptionFor(p, this.copySource()),
+      link,
+    );
     const ok = await copyToClipboard(text);
     this.toast.set(ok ? 'Publicación copiada ✓ Pégalo donde quieras.' : 'No se pudo copiar');
     setTimeout(() => this.toast.set(''), 3000);
@@ -112,8 +122,10 @@ export class ProductDetail {
     const p = this.product.value();
     if (!p) return;
     const link = this.settings.value()?.contactLink ?? '';
-    const desc = p.useFacebookDescription && p.facebookDescription ? p.facebookDescription : p.description;
-    const text = buildPublishText(desc, link);
+    const text = buildPublishText(
+      this.descriptionFor(p, this.copySource()),
+      link,
+    );
     const ok = await copyToClipboard(text);
     await this.data.post(`/products/${p._id}/publish`);
     this.toast.set(ok ? 'Publicado ✓ y copiado. Pégalo ahora.' : 'Publicado ✓ (contador +1)');

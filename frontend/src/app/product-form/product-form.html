@@ -222,6 +222,9 @@
           {{ saving() ? 'Guardando…' : id ? 'Guardar cambios' : 'Crear producto' }}
         </button>
       </div>
+      @if (model().facebookDescription.trim()) {
+        <p class="copy-hint">El checkbox de arriba decide qué copia: marcado = Facebook, sin marcar = General.</p>
+      }
     </form>
 
     <aside class="card">

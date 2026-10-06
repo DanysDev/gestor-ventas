@@ -68,6 +68,17 @@
           </div>
           <div class="actions">
             <a class="btn-detail" [routerLink]="['/productos', p._id]">Ver</a>
+            @if (p.facebookDescription?.trim()) {
+              <select
+                class="src-select"
+                [value]="copySource()[p._id] ?? 'general'"
+                (change)="setCopySource(p, $event)"
+                [title]="'Qué descripción copiar: ' + (copySource()[p._id] === 'facebook' ? 'Facebook' : 'General')"
+              >
+                <option value="general">General</option>
+                <option value="facebook">Facebook</option>
+              </select>
+            }
             <button class="btn-copy" (click)="copyPublish(settings.value()!, p)">⧉ Copiar</button>
             <button
               class="btn-publish"

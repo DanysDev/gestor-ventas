@@ -133,6 +133,27 @@
   background: var(--gray-soft);
   color: var(--muted);
 }
+.copy-source {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.copy-source button {
+  flex: 1;
+  padding: 9px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.copy-source button.on {
+  background: var(--info-soft);
+  border-color: var(--info);
+  color: var(--info);
+}
 .big-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;

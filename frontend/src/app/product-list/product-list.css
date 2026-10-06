@@ -162,6 +162,7 @@
   display: flex;
   gap: 8px;
   margin-top: 2px;
+  flex-wrap: nowrap;
 }
 .actions button,
 .actions a {
@@ -169,6 +170,18 @@
   text-align: center;
   padding: 9px;
   border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  min-width: 0;
+}
+.src-select {
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
   font-weight: 700;
   font-size: 13px;
 }

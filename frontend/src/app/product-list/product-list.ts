@@ -92,13 +92,29 @@ export class ProductList {
     return formatMoney(p.earnedCommission, p.commissionCurrency ?? 'USD');
   }
 
+  protected readonly copySource = signal<Record<string, 'general' | 'facebook'>>({});
+
+  protected descriptionFor(p: Product, source: 'general' | 'facebook'): string {
+    return source === 'facebook' && p.facebookDescription?.trim()
+      ? p.facebookDescription
+      : p.description;
+  }
+
+  protected setCopySource(p: Product, event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.copySource.update((m) => ({
+      ...m,
+      [p._id]: value === 'facebook' ? 'facebook' : 'general',
+    }));
+  }
+
   async copyPublish(settings: Settings, p: Product): Promise<void> {
     if (p.status !== 'active') {
       this.toast.set('Solo productos activos');
       return;
     }
     const text = buildPublishText(
-      p.useFacebookDescription && p.facebookDescription ? p.facebookDescription : p.description,
+      this.descriptionFor(p, this.copySource()[p._id] ?? 'general'),
       settings.contactLink,
     );
     const ok = await copyToClipboard(text);

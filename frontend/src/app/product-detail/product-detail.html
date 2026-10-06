@@ -77,6 +77,21 @@
         </div>
       </div>
 
+      @if (p.facebookDescription?.trim()) {
+        <div class="copy-source" role="group" aria-label="Qué descripción copiar">
+          <button
+            type="button"
+            [class.on]="copySource() === 'general'"
+            (click)="copySource.set('general')"
+          >General</button>
+          <button
+            type="button"
+            [class.on]="copySource() === 'facebook'"
+            (click)="copySource.set('facebook')"
+          >Facebook</button>
+        </div>
+      }
+
       <div class="big-actions">
         <button class="btn-copy" (click)="copyPublish()">⧉ Copiar para publicar</button>
         <button
